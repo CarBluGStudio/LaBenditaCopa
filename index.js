@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const app = express();
 
-// Route: GET /event/:id -> proxies SofaScore event JSON for given :id
+// GET /event/:id -> Proxy do SofaScore
 app.get("/event/:id", async (req, res) => {
   const eventId = req.params.id;
   const url = `https://api.sofascore.com/api/v1/event/${eventId}`;
@@ -13,21 +13,29 @@ app.get("/event/:id", async (req, res) => {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Referer": "https://www.sofascore.com/",
-        "Origin": "https://www.sofascore.com"
+        "Origin": "https://www.sofascore.com",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9"
       },
       responseType: "json",
       timeout: 10000
     });
+
     res.json(response.data);
   } catch (err) {
-    console.error("Erro ao buscar SofaScore:", err && err.message ? err.message : err);
-    res.status(502).json({ error: "Falha ao conectar com SofaScore.", details: err && err.message });
+    console.error("Erro ao buscar SofaScore:", err?.message || err);
+    res
+      .status(502)
+      .json({ error: "Falha ao conectar com SofaScore.", details: err?.message });
   }
 });
 
-// Optional root route for quick test
+// Rota raiz opcional
 app.get("/", (req, res) => {
-  res.json({ status: "LaBenditaCopa proxy", info: "Use /event/:id to fetch SofaScore JSON" });
+  res.json({
+    status: "LaBenditaCopa proxy",
+    info: "Use /event/:id para buscar JSON do SofaScore"
+  });
 });
 
 const PORT = process.env.PORT || 3000;
