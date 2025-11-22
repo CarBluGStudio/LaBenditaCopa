@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: labenditacopa-proxy
-    env: node
-    plan: free
-    region: oregon
-    buildCommand: "npm install"
-    startCommand: "npm start"
